@@ -21,3 +21,5 @@ services:
       - KIBANA_PROTO="http"
       - KIBANA_HOST="instance-5"
       - KIBANA_PORT="9200"
+    volumes:
+      - /home/elkuser/logs:/srv/logs
