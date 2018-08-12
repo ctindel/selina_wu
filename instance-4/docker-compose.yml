@@ -1,0 +1,23 @@
+version: '2'
+services:
+  logstash:
+    image: cisco-logstash
+    build:
+      context: .
+    container_name: cisco-logstash
+    hostname: instance-4
+    #restart: unless-stopped
+    restart: "no"
+    network_mode: "host"
+    ports:
+      - 5000:5000/tcp
+      - 5000:5000/udp
+      - 5044:5044
+    environment:
+      - TZ=America/New_York
+      - ES_PROTO="http"
+      - ES_HOST="instance-1"
+      - ES_PORT="9200"
+      - KIBANA_PROTO="http"
+      - KIBANA_HOST="instance-5"
+      - KIBANA_PORT="9200"

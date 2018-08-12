@@ -1,0 +1,29 @@
+version: '2.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    container_name: es
+    hostname: es
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      - node.name=instance-3
+      - cluster.name=selina_wu
+      - bootstrap.memory_lock=true
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.history.duration=1d
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=instance-1,instance-2,instance-3"
+      - "discovery.zen.minimum_master_nodes=3"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+volumes:
+  esdata1:
+    driver: local

@@ -1,0 +1,13 @@
+version: '2.2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.3.2
+    container_name: kibana
+    environment:
+      SERVER_HOST: "0.0.0.0"
+      ELASTICSEARCH_URL: "http://instance-1:9200"
+      XPACK_MONITORING_ENABLED: "true"
+      XPACK_MONIITORING_HISTORY_DURATION: "1d"
+      XPACK_MONIITORING_ELASTICSEARCH_URL: "http://instance-1:9200"
+      XPACK_MONITORING_KIBANA_COLLECTION_ENABLED: "true"
+    ports: [ '5601:5601' ]
