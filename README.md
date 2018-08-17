@@ -6,24 +6,24 @@ sudo bash /home/elkuser/setup.sh
 
 # Install ELK stack
 
-1. Install elasticsearch on instance-{1,2,3}
-  1. yum install -y elasticsearch
-  1. Copy elasticsearch.yml to /etc/elasticsearch
-  1. systemctl enable elasticsearch
-  1. systemctl start elasticsearch
-  1. tail -f /var/log/elasticsearch/selina_wu.log
+## Install elasticsearch on instance-{1,2,3}
+1. yum install -y elasticsearch
+1. Copy elasticsearch.yml to /etc/elasticsearch
+1. systemctl enable elasticsearch
+1. systemctl start elasticsearch
+1. tail -f /var/log/elasticsearch/selina_wu.log
 
-1. Install kibana on instance-5
-  1. yum install -y kibana
-  1. Copy kibana.yml to /etc/kibana
-  1. systemctl enable kibana
-  1. systemctl start kibana
-  1. journalctl -f -u kibana
+## Install kibana on instance-5
+1. yum install -y kibana
+1. Copy kibana.yml to /etc/kibana
+1. systemctl enable kibana
+1. systemctl start kibana
+1. journalctl -f -u kibana
 
-1. Install logstash on instance-4
-  1. yum install -y logstash
-  1. Copy logstash files to /home/elkuser
-  1. Run /home/elkuser/test.sh which will delete the logstash-cisco-asa-\*
+## Install logstash on instance-4
+1. yum install -y logstash
+1. Copy logstash files to /home/elkuser
+1. Run /home/elkuser/test.sh which will delete the logstash-cisco-asa-\*
 indices and run logstash to process all the files in /home/elkuser/logs which
 in this case is just the sample.
 
