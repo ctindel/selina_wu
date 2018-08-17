@@ -29,13 +29,13 @@ in this case is just the sample.
 
 # Querying Data
 
-1.  Indices will be named logstash-cisco-asa-YYYY.MM.dd
+Indices will be named logstash-cisco-asa-YYYY.MM.dd
 
 You really want to follow this format as logstash loads index templates for
 logstash-\* indices only, and that date format is the standard date format 
 used in all the ES docs, examples, and other tools.
 
-1.  From Kibana Dev Tools you can run ES queries like:
+From Kibana Dev Tools you can run ES queries like:
 
 ```
 GET _cat/nodes
