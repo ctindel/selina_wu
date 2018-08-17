@@ -1,0 +1,48 @@
+CISCOTIMESTAMPTZ %{CISCOTIMESTAMP}( %{TZ})?
+NEXUSTIMESTAMP %{YEAR} %{MONTH} %{MONTHDAY} %{TIME}( %{TZ})?
+
+# There's a bug in the logstash-patterns-core CISCOFW106023
+MYCISCOFW106023 %{CISCO_ACTION:action}( protocol)? %{WORD:protocol} src %{DATA:src_interface}:%{DATA:src_ip}(/%{INT:src_port})?(\(%{DATA:src_fwuser}\))? dst %{DATA:dst_interface}:%{DATA:dst_ip}(/%{INT:dst_port})?(\(%{DATA:dst_fwuser}\))?( \(type %{INT:icmp_type}, code %{INT:icmp_code}\))? by access-group "%{DATA:policy_id}"
+
+# http://www.eventid.net/firegen/pixmessages.asp?lic=1234567&code=5-109012
+# Authen Session End: user '', sid 1, elapsed 313 seconds
+MYCISCOFW109012 Authen Session End: user '%{DATA:user}', sid %{INT:session_id}, elapsed %{INT:duration} seconds
+
+MYCISCOFW305003 Teardown translation for global %{DATA:dst_xlated_ip} local %{GREEDYDATA:src_xlated_ip}
+
+# http://www.eventid.net/firegen/pixmessages.asp?lic=1234567&code=6-302001
+# Built outbound TCP connection 152017 for faddr 212.56.240.37/9200 gaddr 10.0.0.187/2795 laddr 192.168.0.2/2795
+# Built outbound TCP connection 152017 for faddr 212.56.240.37/9200 gaddr 10.0.0.187/2795 laddr 192.168.0.2/2795 ()
+# Built outbound TCP connection 152017 for faddr 212.56.240.37/9200 gaddr 10.0.0.187/2795 laddr 192.168.0.2/2795 (user)
+MYCISCOFW302001 Built %{CISCO_DIRECTION:direction} TCP connection %{INT:connection_id} for faddr %{IP:dst_ip}/%{INT:dst_port}(?:\(%{DATA:fwuser}\))? gaddr %{IP:src_xlated_ip}/%{INT:src_xlated_port} laddr %{IP:src_ip}/%{INT:src_port}( \(%{DATA:user}\))?
+
+# http://www.eventid.net/firegen/pixmessages.asp?lic=1234567&code=6-302002
+# The above says there should be a "for" in the message but our sample messages do not have it
+# Teardown TCP connection 152022 faddr 217.160.131.171/4336 gaddr 10.0.0.187/53 laddr 192.168.0.2/53 duration 0:00:32 bytes 68 (TCP FINs)
+MYCISCOFW302002 Teardown TCP connection %{INT:connection_id}( for)? faddr %{IP:dst_ip}/%{INT:dst_port}(?:\(%{DATA:fwuser}\))? gaddr %{IP:src_xlated_ip}/%{INT:src_xlated_port} laddr %{IP:src_ip}/%{INT:src_port}( \(%{DATA:user}\))? duration %{DATA:duration} bytes %{INT:bytes}( \(%{DATA:reason}\))?
+
+#https://github.com/logstash-plugins/logstash-patterns-core/pull/47/files
+# ASA-2-106001 inbound
+CISCOFW106001_1 (?<direction>Inbound) %{WORD:protocol} connection %{CISCO_ACTION:action} from %{IP:src_ip}/%{INT:src_port} to %{IP:dst_ip}/%{INT:dst_port} flags %{GREEDYDATA:tcp_flags} on interface %{GREEDYDATA:interface}
+# ASA-2-106001 outbound
+CISCOFW106001_2 (?<direction>Outbound) %{WORD:protocol} connection %{CISCO_ACTION:action} from %{IP:dst_ip}/%{INT:dst_port} to %{IP:src_ip}/%{INT:src_port} flags %{GREEDYDATA:tcp_flags} on interface %{GREEDYDATA:interface}
+# ASA-2-106006, ASA-2-106007 inbound
+CISCOFW106006_106007_1 %{CISCO_ACTION:action} (?<direction>inbound) %{WORD:protocol} from %{IP:src_ip}/%{INT:src_port}(\(%{DATA:src_fwuser}\))? to %{IP:dst_ip}/%{INT:dst_port}(\(%{DATA:dst_fwuser}\))? (?:on interface %{DATA:interface}|due to %{CISCO_REASON:reason})
+# ASA-2-106006, ASA-2-106007 outbound
+CISCOFW106006_106007_2 %{CISCO_ACTION:action} (?<direction>outbound) %{WORD:protocol} from %{IP:dst_ip}/%{INT:dst_port}(\(%{DATA:dst_fwuser}\))? to %{IP:src_ip}/%{INT:src_port}(\(%{DATA:src_fwuser}\))? (?:on interface %{DATA:interface}|due to %{CISCO_REASON:reason})
+# ASA-2-106010
+CISCOFW106010 %{CISCO_ACTION:action} %{CISCO_DIRECTION:direction} %{WORD:protocol} src %{IP:src_ip}/%{INT:src_port}(\(%{DATA:src_fwuser}\))? dst %{IP:dst_ip}/%{INT:dst_port}(\(%{DATA:dst_fwuser}\))?
+
+# ASA-6-302013, ASA-6-302014, ASA-6-302015, ASA-6-302016 inbound
+CISCOFW302013_302014_302015_302016_1 %{CISCO_ACTION:action}(?: (?<direction>inbound))? %{WORD:protocol} connection %{INT:connection_id} for %{DATA:src_interface}:%{IP:src_ip}/%{INT:src_port}( \(%{IP:src_xlated_ip}/%{INT:src_xlated_port}\))?(\(%{DATA:src_fwuser}\))? to %{DATA:dst_interface}:%{IP:dst_ip}/%{INT:dst_port}( \(%{IP:dst_xlated_ip}/%{INT:dst_xlated_port}\))?(\(%{DATA:dst_fwuser}\))?( duration %{TIME:duration} bytes %{INT:bytes})?(?: %{CISCO_REASON:reason})?( \(%{DATA:user}\))?
+# ASA-6-302013, ASA-6-302014, ASA-6-302015, ASA-6-302016 outbound
+CISCOFW302013_302014_302015_302016_2 %{CISCO_ACTION:action}(?: (?<direction>outbound))? %{WORD:protocol} connection %{INT:connection_id} for %{DATA:dst_interface}:%{IP:dst_ip}/%{INT:dst_port}( \(%{IP:dst_xlated_ip}/%{INT:dst_xlated_port}\))?(\(%{DATA:dst_fwuser}\))? to %{DATA:src_interface}:%{IP:src_ip}/%{INT:src_port}( \(%{IP:src_xlated_ip}/%{INT:src_xlated_port}\))?(\(%{DATA:src_fwuser}\))?( duration %{TIME:duration} bytes %{INT:bytes})?(?: %{CISCO_REASON:reason})?( \(%{DATA:user}\))?
+# ASA-6-302020_302021 inbound
+CISCOFW302020_302021_1 %{CISCO_ACTION:action}(?: (?<direction>inbound))? %{WORD:protocol} connection for faddr %{IP:src_ip}/%{INT:icmp_seq_num}(?:\(%{DATA:fwuser}\))? gaddr %{IP:dst_xlated_ip}/%{INT:icmp_code_xlated} laddr %{IP:dst_ip}/%{INT:icmp_code}( \(%{DATA:user}\))?
+# ASA-6-302020_302021 outbound
+CISCOFW302020_302021_2 %{CISCO_ACTION:action}(?: (?<direction>outbound))? %{WORD:protocol} connection for faddr %{IP:dst_ip}/%{INT:icmp_seq_num}(?:\(%{DATA:fwuser}\))? gaddr %{IP:src_xlated_ip}/%{INT:icmp_code_xlated} laddr %{IP:src_ip}/%{INT:icmp_code}( \(%{DATA:user}\))?
+
+# ASA-6-602303, ASA-6-602304 inbound
+CISCOFW602303_602304_1 %{WORD:protocol}: An (?<direction>inbound) %{GREEDYDATA:tunnel_type} SA \(SPI= %{DATA:spi}\) between %{IP:src_ip} and %{IP:dst_ip} \(user= %{DATA:user}\) has been %{CISCO_ACTION:action}
+# ASA-6-602303, ASA-6-602304 outbound
+CISCOFW602303_602304_2 %{WORD:protocol}: An (?<direction>outbound) %{GREEDYDATA:tunnel_type} SA \(SPI= %{DATA:spi}\) between %{IP:dst_ip} and %{IP:dst_ip} \(user= %{DATA:user}\) has been %{CISCO_ACTION:action}

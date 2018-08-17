@@ -1,0 +1,7 @@
+server.host: "localhost"
+server.port: 5601
+server.name: "instance-5"
+elasticsearch.url: "http://instance-1:9200"
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.url: "http://instance-1:9200"
+xpack.monitoring.kibana.collection.enabled: true

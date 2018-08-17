@@ -1,0 +1,10 @@
+cluster.name: selina_wu
+node.name: instance-2
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+discovery.zen.ping.unicast.hosts: ["instance-1", "instance-2", "instance-3"]
+discovery.zen.minimum_master_nodes: 3
+xpack.monitoring.enabled: true
+xpack.monitoring.history.duration: 1d
+#network.host: 192.168.0.1
+#http.port: 9200

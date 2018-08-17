@@ -42,3 +42,16 @@ echo "session required pam_limits.so" >> /etc/pam.d/common-session-noninteractiv
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 sysctl -p
 
+# Setup Elastic Yum Repo
+yum install -y java-1.8.0-openjdk.x86_64
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+cat > /etc/yum.repos.d/elastic-6.repo << EOF
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://artifacts.elastic.co/packages/6.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+EOF
