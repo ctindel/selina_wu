@@ -50,4 +50,5 @@ aren't any setup by default so we need to create the logstash patterns.
 
 Go to Kibana->Management->Index Patterns to create a new default index pattern
 Pattern name: logstash-cisco-asa-\*
+
 Time Filter Field Name: @timestamp
